@@ -105,41 +105,6 @@ describe('Ext.server.Connect.cookieSession', function() {
         });
     });
 
-    describe('req.session.cookie', function() {
-        it('should be a Cookie', function(done) {
-            app.use(function(req, res) {
-                req.session.cookie.constructor.name.should.equal('Cookie');
-                res.end();
-            });
-
-            app.request()
-            .get('/')
-            .end(function(res) {
-                var cookie = sess(res);
-                cookie.should.include('path=/');
-                cookie.should.include('httpOnly');
-                done();
-            });
-        });
-
-        it('should manipulate the cookie', function(done) {
-            app.use(function(req, res) {
-                req.session.cookie.path = '/admin';
-                req.session.cookie.httpOnly = false;
-                res.end();
-            });
-
-            app.request()
-            .get('/')
-            .end(function(res) {
-                var cookie = sess(res);
-                cookie.should.include('path=/admin');
-                cookie.should.not.include('httpOnly');
-                done();
-            });
-        });
-    });
-
     describe('cookie option', function() {
         it('should override defaults', function(done) {
             var app = Ext.create('Ext.server.Connect');
@@ -154,7 +119,7 @@ describe('Ext.server.Connect.cookieSession', function() {
             .get('/')
             .end(function(res) {
                 var cookie = sess(res);
-                cookie.should.include('path=/');
+                cookie.should.include('Path=/');
                 cookie.should.not.include('httpOnly');
                 done();
             });
@@ -193,8 +158,8 @@ describe('Ext.server.Connect.cookieSession', function() {
             var modify;
 
             var app = Ext.create('Ext.server.Connect')
-            .use(Ext.server.Connect.cookieParser('keyboard cat'))
-            .use(Ext.server.Connect.cookieSession())
+            .use(Ext.server.Connect.cookieParser())
+            .use(Ext.server.Connect.cookieSession({ secret: 'keyboard cat'}))
             .use(function(req, res, next) {
                 if (modify) req.session.foo = 'bar';
                 res.end();
@@ -236,9 +201,8 @@ describe('Ext.server.Connect.cookieSession', function() {
         it('should not set-cookie when insecure', function(done) {
             var app = Ext.create('Ext.server.Connect')
             .use(Ext.server.Connect.cookieParser('keyboard cat'))
-            .use(Ext.server.Connect.cookieSession())
+            .use(Ext.server.Connect.cookieSession({ cookie: { secure: true }}))
             .use(function(req, res, next) {
-                req.session.cookie.secure = true;
                 res.end();
             });
 
