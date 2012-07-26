@@ -13,12 +13,6 @@ require('../../index.js');
 // }}}
 // {{{ requires
 
-Ext.Loader.setConfig({
-    paths: {
-        Ext: '../../../lib/ext-server/'
-    }
-});
-
 Ext.Loader.require('Ext.server.Server');
 
 // }}}
@@ -26,7 +20,7 @@ Ext.Loader.require('Ext.server.Server');
 
 describe('Ext.server.*', function() {
 
-    var port = Ext.Server.$port;
+    var port = 8124;
 
     it('should wrap in an http.Server', function(done){
 
@@ -46,7 +40,7 @@ describe('Ext.server.*', function() {
 
     it('Ext.server.Server.create onLaunch', function(done) {
 
-        Ext.service({
+        Ext.server.Server.create({
             port    : ++port,
             onLaunch: function() {
                 done();
@@ -59,7 +53,7 @@ describe('Ext.server.*', function() {
 
         var fixtures = require('path').normalize(__dirname + '/../shared/fixtures');
 
-        Ext.service({
+        Ext.server.Server.create({
             public: fixtures,
             port: ++port,
             onLaunch: function() {
