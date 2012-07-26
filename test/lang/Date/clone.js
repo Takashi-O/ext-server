@@ -20,7 +20,7 @@ describe('Ext.Date.clone', function() {
         var dt = new Date('2011/05/16 09:12:54');
         var dt2 = Ext.Date.clone(dt);
 
-        dt2.should.not.equal(dt);
+        dt2.should.not.eql(dt);
 
     });
 
